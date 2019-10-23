@@ -6,10 +6,8 @@ use structopt::{clap, StructOpt};
 
 #[derive(Debug, StructOpt)]
 #[structopt(name = "App name")]
-#[structopt(raw(
-    long_version = "option_env!(\"LONG_VERSION\").unwrap_or(env!(\"CARGO_PKG_VERSION\"))"
-))]
-#[structopt(raw(setting = "clap::AppSettings::ColoredHelp"))]
+#[structopt(long_version(option_env!("LONG_VERSION").unwrap_or(env!("CARGO_PKG_VERSION"))))]
+#[structopt(setting(clap::AppSettings::ColoredHelp))]
 pub struct Opt {
     #[structopt(name = "WORDS")]
     pub words: Vec<String>,
@@ -29,7 +27,7 @@ pub struct Opt {
     #[structopt(
         short = "t",
         long = "threads",
-        raw(default_value = "&THREADS"),
+        default_value(&THREADS),
         value_name = "NUM"
     )]
     pub threads: usize,
@@ -37,17 +35,17 @@ pub struct Opt {
     #[structopt(
         short = "m",
         long = "method",
-        raw(possible_values = "&Method::variants()")
+        possible_values(&Method::variants())
     )]
     pub method: Option<Method>,
 
-    #[structopt(short = "a", raw(conflicts_with_all = "&[\"b\", \"c\"]"))]
+    #[structopt(short = "a", conflicts_with_all(&["b", "c"]))]
     pub a: bool,
 
-    #[structopt(short = "b", raw(conflicts_with_all = "&[\"a\", \"c\"]"))]
+    #[structopt(short = "b", conflicts_with_all(&["a", "c"]))]
     pub b: bool,
 
-    #[structopt(short = "c", raw(conflicts_with_all = "&[\"a\", \"b\"]"))]
+    #[structopt(short = "c", conflicts_with_all(&["a", "b"]))]
     pub c: bool,
 
     #[structopt(short = "v", long = "verbose")]
@@ -60,7 +58,7 @@ pub struct Opt {
 #[derive(Debug, StructOpt)]
 pub enum Sub {
     #[structopt(name = "sub1", about = "sub command1")]
-    #[structopt(raw(setting = "clap::AppSettings::ColoredHelp"))]
+    #[structopt(setting(clap::AppSettings::ColoredHelp))]
     Sub1,
 }
 
